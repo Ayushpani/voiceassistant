@@ -1,0 +1,27 @@
+
+Hello Human
+I am your voice assistant
+
+I am here to help you out, and can perform the following functions:
+
+1) can open
+	notepad
+	vscode
+	excel sheet
+	chrome
+
+2) can play
+	song for you on you-tube
+	any video on you-tube
+
+3) can crack jokes for ypu that you can never understand
+
+4) Can fin any country or city for you in Gmaps
+
+5) Can click your photo
+
+6) can search about any information you ask
+
+7) Can open up a small a simple snake game when you are bored
+
+THINGS I CAN'T DO : Be your girlfriend.......Coz I am boy :)
