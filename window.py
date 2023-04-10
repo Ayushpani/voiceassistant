@@ -1,5 +1,7 @@
 from tkinter import *
 from multiprocessing import Process
+
+import AppOpener
 from PIL import Image, ImageTk
 import speech_recognition as sr
 import datetime
@@ -9,10 +11,18 @@ import pywhatkit as kt
 #from PyDictionary import PyDictionary
 from threading import Thread
 import pyjokes
+import webbrowser
+from AppOpener import *
+import wolframalpha
+from ecapture import ecapture as ec
+import os
+from math import *
+
 
 engine = pyttsx3.init('sapi5')
 engine.setProperty("rate", 145)
 
+global name
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
@@ -66,14 +76,35 @@ def having(text,subtext):
             return True
     return False
 
+
+
 def command(query):
 
 
     """ Interactions : """
+    if having(query,['you know my name','my name']):
+        r = sr.Recognizer()
+        with sr.Microphone() as mic:
+            speak("Sorry human i don't know your name, what would you like me to call you ?")
+            print("Listening")
+            bot_status(True)
+            uservoice = r.listen(mic)
+            print("Recognizing")
+            bot_status(False, True)
+            query = r.recognize_google(uservoice)
+            name =query.replace("my name is","")
+            speak("Jay Shree Ram Ram "+name+" I am you voice assistance Rudra, nice to meet you")
+
+    if having(query,['task','perform','what can you do']):
+        speak("Ruk bataata hu mei kya kar sakta hu..")
+        tAsk="C:\\Users\\Ayush Panigrahi\\PycharmProjects\\voice_assistant\\jarvis.txt"
+        os.startfile(tAsk)
 
     if having(query,["who are you","who made you"]):
-        message(text="Hii, I am a voice assistant namely D.D.X made by Krithik, Ayush, Unnati", bot=True)
-        speak("Hii, I am a voice assistant namely DDX made by Krithik, Ayush, Unnati")
+        Me = "C:\\Users\\Ayush Panigrahi\\PycharmProjects\\voice_assistant\\about.txt"
+        os.startfile(Me)
+        speak("Hii, I am a voice assistant namely Nigga made by Krithik, Ayush, Unnati")
+
         bot_status(False,False,True)
 
     if having(query,["you are good","you are nice","you are awesome"]):
@@ -129,17 +160,73 @@ def command(query):
         kt.search(query)
         bot_status(False, False, True)
 
+    # Snake game command
     if having(query,['games','open game']):
         message("Let's have some fun with our games.....")
         speak("opening the snake game ")
         import snake
         snake.start()
-    
-                    
 
-    
-    
-        """ DICTIONARY USE """
+    #gmap/ location command
+    if having(query,['where is']):
+            query = query.replace("where is", "")
+            location = query
+            speak("User asked to Locate"+location)
+
+            webbrowser.open("https://www.google.co.in/maps/place/" + location)
+
+    #opening application
+    if having(query,['notepad']):
+        speak("Opening notepad...")
+        os.system("notepad")
+
+    if having(query,['open code','vscode']):
+        pCode="C:\\Users\\Ayush Panigrahi\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+        speak("Opening VS code...")
+        os.startfile(pCode)
+
+    if having(query,['whatsapp']):
+        speak("opening whatsapp")
+        wApp="C:\\Users\\Ayush Panigrahi\\AppData\\Local\\WhatsApp\\WhatsApp.exe"
+        os.startfile(wApp)
+
+    if having(query,['chrome, web browser']):
+        web ="C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+        speak(" opening chrome")
+        os.startfile(web)
+
+    if having(query,['excel','sheet']):
+        eXcel="C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Excel.lnk"
+        speak("opening excel.")
+        os.startfile(eXcel)
+
+    '''if having(query, ['POWERPOINT','PPT']):
+        speak("Opening MS Powerpoint...")
+        os.system("powerpnt")
+    if having(query, ['EXCEL','SHEETS']):
+        speak("Opening MS excel...")
+        os.system("excel")
+    if having(query, ['cmd','command prompt','terminal']):
+        speak("Opening prompt...")
+        os.system("command prompt")'''
+
+    if having(query,['calculate']):
+        app_id = "Wolframalpha api id"
+        client = wolframalpha.Client(app_id)
+        indx = query.lower().split().index('calculate')
+        query = query.split()[indx + 1:]
+        res = client.query(' '.join(query))
+        answer = next(res.results).text
+        print("The answer is " + answer)
+        speak("The answer is " + answer)
+
+
+    # taking a photo
+    if having(query,['shot','camera','snap']):
+        speak("Stay still Capturing your beautiful face")
+        ec.capture(0, "DXD camera ", "Assistant.jpg")
+
+    """ DICTIONARY USE """
 
     '''if having(query,["what is the meaning of","what is the definition of","define"]):
         if "what is the meaning of" in query:
@@ -174,6 +261,7 @@ def bot_status(lsn=False,recgn=False,mic=False):
 def record():
     r=sr.Recognizer()
     with sr.Microphone() as mic:
+
         print("Listening")
         bot_status(True)
         uservoice=r.listen(mic)
@@ -191,8 +279,8 @@ def record():
 def runAssistant():
     query=record()
     if "thank you" in query:
-        message(text="Your most welcome",bot=True)
-        speak("Your most welcome.")
+        message(text="Your most welcome"+name,bot=True)
+        speak("Your most welcome "+name+" will see you again")
         return
     else:
         command(query)
